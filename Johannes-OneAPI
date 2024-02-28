@@ -1,0 +1,847 @@
+#-------------------------1D AXPY
+
+function axpy_cuda_kernel(alpha,x,y)
+  i = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+  @inbounds x[i] = x[i] + alpha * y[i]
+  return nothing
+end
+
+function axpy_cuda(SIZE,alpha,x,y)
+  maxPossibleThreads = attribute(device(), CUDA.DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X)
+  threads = min(SIZE, maxPossibleThreads)
+  blocks = ceil(Int, SIZE/threads)
+  CUDA.@sync @cuda threads = threads blocks = blocks axpy_cuda_kernel(alpha,x,y)
+end
+
+SIZE = 100000000
+x = ones(SIZE)
+y = ones(SIZE)
+alpha = 2.0
+dx = CuArray(x)
+dy = CuArray(y)
+for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+ @time begin
+  axpy_cuda(i,alpha,dx,dy)
+ end
+end
+
+function axpy(i, alpha, x, y)
+  @inbounds x[i] += alpha * y[i]
+end
+
+x = ones(SIZE)
+y = ones(SIZE)
+jx = JACC.Array(x)
+jy = JACC.Array(y)
+for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+ @time begin
+  JACC.parallel_for(i, axpy, alpha, jx, jy)
+ end
+end
+
+#-------------------------1D DOT
+
+function dot_cuda_kernel(SIZE, ret, x, y)
+    shared_mem = @cuDynamicSharedMem(Float64, 512)
+    i = ( blockIdx().x - 1) * blockDim().x + threadIdx().x
+    ti = threadIdx().x
+    tmp::Float64 = 0.0
+    shared_mem[threadIdx().x] = 0.0
+
+    if i <= SIZE
+      tmp = @inbounds x[i] * y[i]
+      shared_mem[threadIdx().x] = tmp
+    end
+    sync_threads()
+    if (ti <= 256)
+     shared_mem[ti] += shared_mem[ti+256]
+    end
+    sync_threads()
+    if (ti <= 128)
+      shared_mem[ti] += shared_mem[ti+128]
+    end
+    sync_threads()
+    if (ti <= 64)
+      shared_mem[ti] += shared_mem[ti+64]
+    end
+    sync_threads()
+    if (ti <= 32)
+      shared_mem[ti] += shared_mem[ti+32]
+    end
+    sync_threads()
+    if (ti <= 16)
+      shared_mem[ti] += shared_mem[ti+16]
+    end
+    sync_threads()
+    if (ti <= 8)
+      shared_mem[ti] += shared_mem[ti+8]
+    end
+    sync_threads()
+    if (ti <= 4)
+      shared_mem[ti] += shared_mem[ti+4]
+    end
+    sync_threads()
+    if (ti <= 2)
+      shared_mem[ti] += shared_mem[ti+2]
+    end
+    sync_threads()
+    if (ti == 1)
+      shared_mem[ti] += shared_mem[ti+1]
+      ret[blockIdx().x] = shared_mem[ti]
+    end
+    return nothing
+end
+
+function reduce_kernel(SIZE, red, ret)
+    shared_mem = @cuDynamicSharedMem(Float64, 512)
+    i = ( blockIdx().x - 1) * blockDim().x + threadIdx().x
+    ii = i
+    tmp::Float64 = 0.0
+    if SIZE > 512
+      while ii <= SIZE
+        tmp += @inbounds red[ii]
+        ii += 512
+      end
+    else
+      tmp = @inbounds red[i]
+    end
+    shared_mem[i] = tmp
+    sync_threads()
+    if (i <= 256)
+      shared_mem[i] += shared_mem[i+256]
+    end
+    sync_threads()
+    if (i <= 128)
+      shared_mem[i] += shared_mem[i+128]
+    end
+    sync_threads()
+    if (i <= 64)
+      shared_mem[i] += shared_mem[i+64]
+    end
+    sync_threads()
+    if (i <= 32)
+      shared_mem[i] += shared_mem[i+32]
+    end
+    sync_threads()
+    if (i <= 16)
+      shared_mem[i] += shared_mem[i+16]
+    end
+    sync_threads()
+    if (i <= 8)
+      shared_mem[i] += shared_mem[i+8]
+    end
+    sync_threads()
+    if (i <= 4)
+      shared_mem[i] += shared_mem[i+4]
+    end
+    sync_threads()
+    if (i <= 2)
+      shared_mem[i] += shared_mem[i+2]
+    end
+    sync_threads()
+    if (i == 1)
+      shared_mem[i] += shared_mem[i+1]
+      ret[1] = shared_mem[1]
+    end
+    return nothing
+end
+
+function dot_cuda(SIZE, x, y)
+  maxPossibleThreads = 512
+  threads = min(SIZE, maxPossibleThreads)
+  blocks = ceil(Int, SIZE/threads)
+  ret = CUDA.zeros(Float64,blocks)
+  rret = CUDA.zeros(Float64,1)
+  CUDA.@sync @cuda threads=threads blocks=blocks shmem = 512 * sizeof(Float64) dot_cuda_kernel(SIZE, ret, x, y)
+  CUDA.@sync @cuda threads=threads blocks=1 shmem = 512 * sizeof(Float64) reduce_kernel(blocks, ret, rret)
+  return rret
+end
+
+x = ones(SIZE)
+y = ones(SIZE)
+dx = CuArray(x)
+dy = CuArray(y)
+for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+ @time begin
+   res = dot_cuda(i,dx,dy)
+ end
+end
+
+function dot(i, x, y)
+  return @inbounds x[i] * y[i]
+end
+
+x = ones(SIZE)
+y = ones(SIZE)
+jx = JACC.Array(x)
+jy = JACC.Array(y)
+for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+ @time begin
+  res = JACC.parallel_reduce(i, dot, jx, jy)
+ end
+end
+
+#-------------------------2D AXPY
+
+function axpy_cuda_kernel(alpha,x,y)
+  i = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+  j = (blockIdx().y - 1) * blockDim().y + threadIdx().y
+  @inbounds x[i,j] = x[i,j] + alpha * y[i,j]
+  return nothing
+end
+
+function axpy_cuda((M,N),alpha,x,y)
+  maxPossibleThreads = 16 
+  Mthreads = min(M, maxPossibleThreads)
+  Mblocks = ceil(Int, M/Mthreads)
+  Nthreads = min(N, maxPossibleThreads)
+  Nblocks = ceil(Int, N/Nthreads)
+  CUDA.@sync @cuda threads = (Mthreads, Nthreads) blocks=(Mblocks, Nblocks) axpy_cuda_kernel(alpha,x,y)
+end
+
+SIZE = 10000
+x = ones(SIZE, SIZE)
+y = ones(SIZE, SIZE)
+alpha = 2.0
+dx = CuArray(x)
+dy = CuArray(y)
+for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+ @time begin
+  axpy_cuda((i,i),alpha,dx,dy)
+ end
+end
+
+
+function axpy(i, j, alpha, x, y)
+    @inbounds x[i,j] = x[i,j] + alpha * y[i,j]
+end
+
+x = ones(SIZE, SIZE)
+y = ones(SIZE, SIZE)
+jx = JACC.Array(x)
+jy = JACC.Array(y)
+for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+ @time begin
+  JACC.parallel_for((i,i), axpy, alpha, jx, jy)
+ end
+end
+
+#-------------------------2D DOT
+
+function dot_cuda_kernel((M, N), ret, x, y)
+  shared_mem = @cuDynamicSharedMem(Float64, 16*16)
+
+  i = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+  j = (blockIdx().y - 1) * blockDim().y + threadIdx().y
+  ti = threadIdx().x
+  tj = threadIdx().y
+  bi = blockIdx().x
+  bj = blockIdx().y
+
+  tmp::Float64 = 0.0
+  shared_mem[((ti-1)*16)+tj] = tmp
+
+  if (i <= M && j <= N)
+    tmp = @inbounds x[i,j] * y[i,j]
+    shared_mem[(ti-1)*16+tj] = tmp
+  end
+  sync_threads()
+  if (ti <= 8 && tj <= 8 && ti+8 <= M && tj+8 <= N)
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+7)*16)+(tj+8)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+8)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+7)*16)+tj]
+  end
+  sync_threads()
+  if (ti <= 4 && tj <= 4 && ti+4 <= M && tj+4 <= N)
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+3)*16)+(tj+4)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+4)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+3)*16)+tj]
+  end
+  sync_threads()
+  if (ti <= 2 && tj <= 2 && ti+2 <= M && tj+2 <= N)
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+1)*16)+(tj+2)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+2)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+1)*16)+tj]
+  end
+  sync_threads()
+  if (ti == 1 && tj == 1 && ti+1 <= M && tj+1 <= N)
+    shared_mem[((ti-1)*16)+tj] += shared_mem[ti*16+(tj+1)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+1)]
+    shared_mem[((ti-1)*16)+tj] += shared_mem[ti*16+tj]
+    ret[bi,bj] = shared_mem[((ti-1)*16)+tj]
+  end
+  return nothing
+end
+
+function reduce_kernel((M, N), red, ret)
+  shared_mem = @cuDynamicSharedMem(Float64, 16*16)
+
+  i = threadIdx().x
+  j = threadIdx().y
+  ii = i
+  jj = j
+
+  tmp::Float64 = 0.0
+  shared_mem[(i-1)*16+j] = tmp
+  
+  if M > 16 && N > 16
+    while ii <= M
+      jj = threadIdx().y
+      while jj <= N
+        tmp = tmp + @inbounds red[ii,jj]
+        jj += 16
+      end
+      ii += 16
+    end
+  elseif M > 16
+    while ii <= N
+      tmp = tmp + @inbounds red[ii,jj]
+      ii += 16
+    end
+  elseif N > 16
+    while jj <= N
+      tmp = tmp + @inbounds red[ii,jj]
+      jj += 16
+    end
+  elseif M <= 16 && N <= 16
+    if i <= M && j <= N
+      tmp = tmp + @inbounds red[i,j]
+    end
+  end
+  shared_mem[(i-1)*16+j] = tmp
+  red[i,j] = shared_mem[(i-1)*16+j]
+  sync_threads()
+  if (i <= 8 && j <= 8)
+    if (i+8 <= M && j+8 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i+7)*16)+(j+8)]
+    end
+    if (i <= M && j+8 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i-1)*16)+(j+8)]
+    end
+    if (i+8 <= M && j <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i+7)*16)+j]
+    end
+  end
+  sync_threads()
+  if (i <= 4 && j <= 4)
+    if (i+4 <= M && j+4 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i+3)*16)+(j+4)]
+    end
+    if (i <= M && j+4 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i-1)*16)+(j+4)]
+    end
+    if (i+4 <= M && j <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i+3)*16)+j]
+    end
+  end
+  sync_threads()
+  if (i <= 2 && j <= 2)
+    if (i+2 <= M && j+2 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i+1)*16)+(j+2)]
+    end
+    if (i <= M && j+2 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i-1)*16)+(j+2)]
+    end
+    if (i+2 <= M && j <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i+1)*16)+j]
+    end
+  end
+  sync_threads()
+  if (i == 1 && j == 1)
+    if (i+1 <= M && j+1 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[i*16+(j+1)]
+    end
+    if (i <= M && j+1 <= N)
+      shared_mem[((i-1)*16)+j] += shared_mem[((i-1)*16)+(j+1)]
+    end
+    if (i+1 <= M && j <= N)  
+      shared_mem[((i-1)*16)+j] += shared_mem[i*16+j]
+    end
+    ret[1] = shared_mem[((i-1)*16)+j] 
+  end
+  return nothing
+end
+
+function dot_cuda((M,N), x, y)
+  maxPossibleThreads = 16 
+  Mthreads = min(M, maxPossibleThreads)
+  Nthreads = min(N, maxPossibleThreads)
+  Mblocks = ceil(Int, M/Mthreads)
+  Nblocks = ceil(Int, N/Nthreads)
+  ret = CUDA.zeros(Float64, (Mblocks, Nblocks))
+  rret = CUDA.zeros(Float64,1)
+  CUDA.@sync @cuda threads = (Mthreads, Nthreads) blocks = (Mblocks, Nblocks) shmem = 16 * 16 * sizeof(Float64) dot_cuda_kernel((M, N), ret, x, y)
+  CUDA.@sync @cuda threads = (Mthreads, Nthreads) blocks = (1, 1) shmem = 16 * 16 * sizeof(Float64) reduce_kernel((Mblocks, Nblocks), ret, rret)
+  return rret
+end
+
+SIZE = 10000
+x = ones(SIZE,SIZE)
+y = ones(SIZE,SIZE)
+dx = CuArray(x)
+dy = CuArray(y)
+for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+ @time begin
+  res = dot_cuda((i,i),dx,dy)
+ end
+end
+
+function dot(i, j, x, y)
+  return @inbounds x[i,j] * y[i,j]
+end
+
+x = ones(SIZE,SIZE)
+y = ones(SIZE,SIZE)
+jx = JACC.Array(x)
+jy = JACC.Array(y)
+for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+ @time begin
+  res = JACC.parallel_reduce((i,i), dot, jx, jy)
+ end
+end
+
+#-------------------------LBM
+
+function lbm_cuda_kernel(f, f1, f2, t, w, cx, cy, SIZE)
+
+  x = ( blockIdx().x - 1) * blockDim().x + threadIdx().x
+  y = ( blockIdx().y - 1) * blockDim().y + threadIdx().y  
+  
+  u = 0.0
+  v = 0.0
+  p = 0.0
+  x_stream::Int32 = 0 
+  y_stream::Int32 = 0
+  ind::Int32 = 0
+  iind::Int32 = 0
+  k::Int32 = 0
+  
+  if x > 1 && x < SIZE && y > 1 && y < SIZE
+    for k in 1:9
+      x_stream = x - cx[k]
+      y_stream = y - cy[k]
+      ind =  ( k - 1 ) * SIZE * SIZE + x * SIZE + y
+      iind = ( k - 1 ) * SIZE * SIZE + x_stream * SIZE + y_stream
+      f[trunc(Int,ind)] = f1[trunc(Int,iind)] 
+    end
+    for k in 1:9
+      ind =  ( k - 1 ) * SIZE * SIZE + x * SIZE + y
+      p = p[1,1] + f[ind]
+      u = u[1,1] + f[ind] * cx[k]
+      v = v[1,1] + f[ind] * cy[k]
+    end
+    u = u / p
+    v = v / p
+    for k in 1:9
+      feq = w[k] * p * ( 1.0 + 3.0 * ( cx[k] * u + cy[k] * v ) + ( cx[k] * u + cy[k] * v ) * ( cx[k] * u + cy[k] * v ) - 1.5 * ( ( u * u ) + ( v * v ) ) )
+      ind =  ( k - 1 ) * SIZE * SIZE + x * SIZE + y
+      iind = ( k - 1 ) * SIZE * SIZE + x_stream * SIZE + y_stream
+      f2[trunc(Int,iind)] = f[trunc(Int,ind)] * (1.0 - 1.0 / t) + feq * 1 / t
+    end
+  end
+  return nothing
+end
+
+function lbm_cuda((M,N), f, f1, f2, t, w, cx, cy, SIZE)
+  maxPossibleThreads = 16 
+  Mthreads = min(M, maxPossibleThreads)
+  Mblocks = ceil(Int, M/Mthreads)
+  Nthreads = min(N, maxPossibleThreads)
+  Nblocks = ceil(Int, N/Nthreads)
+  CUDA.@sync @cuda threads=(Mthreads, Nthreads) blocks=(Mblocks, Nblocks) lbm_cuda_kernel(f, f1, f2, t, w, cx, cy, SIZE)
+end
+
+SIZE = 1000
+f = ones(SIZE * SIZE * 9) .* 2.0
+f1 = ones(SIZE * SIZE * 9) .* 3.0 
+f2 = ones(SIZE * SIZE * 9) .* 4.0
+cx = zeros(9)
+cy = zeros(9)
+cx[1] = 0
+cy[1] = 0
+cx[2] = 1
+cy[2] = 0
+cx[3] = -1
+cy[3] = 0
+cx[4] = 0
+cy[4] = 1
+cx[5] = 0
+cy[5] = -1
+cx[6] = 1
+cy[6] = 1
+cx[7] = -1
+cy[7] = 1
+cx[8] = -1
+cy[8] = -1
+cx[9] = 1
+cy[9] = -1
+ 
+w   = ones(9)
+t   = 1.0
+df  = CuArray(f)
+df1 = CuArray(f1)
+df2 = CuArray(f2)
+dcx = CuArray(cx)
+dcy = CuArray(cy)
+dw  = CuArray(w)
+
+for i in [100,200,300,400,500,600,700,800,900,1000]
+ @time begin
+  lbm_cuda((i,i),df,df1,df2,t,dw,dcx,dcy,SIZE)
+ end
+end
+
+function lbm(x, y, f, f1, f2, t, w, cx, cy, SIZE)
+  u = 0.0
+  v = 0.0
+  p = 0.0
+  x_stream = 0 
+  y_stream = 0
+  
+  if x > 1 && x < SIZE && y > 1 && y < SIZE
+    for k in 1:9
+      x_stream = x - cx[k]
+      y_stream = y - cy[k]
+      ind =  ( k - 1 ) * SIZE * SIZE + x * SIZE + y
+      iind = ( k - 1 ) * SIZE * SIZE + x_stream * SIZE + y_stream
+      f[trunc(Int,ind)] = f1[trunc(Int,iind)]
+    end
+    for k in 1:9
+      ind =  ( k - 1 ) * SIZE * SIZE + x * SIZE + y
+      p = p[1,1] + f[ind]
+      u = u[1,1] + f[ind] * cx[k]
+      v = v[1,1] + f[ind] * cy[k]
+    end
+    u = u / p
+    v = v / p
+    for k in 1:9
+      feq = w[k] * p * ( 1.0 + 3.0 * ( cx[k] * u + cy[k] * v ) + ( cx[k] * u + cy[k] * v ) * ( cx[k] * u + cy[k] * v ) - 1.5 * ( ( u * u ) + ( v * v ) ) )
+      ind =  ( k - 1 ) * SIZE * SIZE + x * SIZE + y
+      iind = ( k - 1 ) * SIZE * SIZE + x_stream * SIZE + y_stream
+      f2[trunc(Int,iind)] = f[trunc(Int,ind)] * (1.0 - 1.0 / t) + feq * 1 / t
+    end
+  end
+end
+
+f = ones(SIZE * SIZE * 9) .* 2.0
+f1 = ones(SIZE * SIZE * 9) .* 3.0 
+f2 = ones(SIZE * SIZE * 9) .* 4.0
+w   = ones(9)
+t   = 1.0
+jf  = JACC.Array(f)
+jf1 = JACC.Array(f1)
+jf2 = JACC.Array(f2)
+jcx = JACC.Array(cx)
+jcy = JACC.Array(cy)
+jw  = JACC.Array(w)
+
+for i in [100,200,300,400,500,600,700,800,900,1000]
+ @time begin
+   JACC.parallel_for((i,i),lbm,jf,jf1,jf2,t,jw,jcx,jcy,SIZE)
+ end
+end
+
+#-------------------------CG
+
+function axpy_cuda_kernel(alpha,x,y)
+  i = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+  @inbounds x[i] = x[i] + alpha * y[i]
+  return nothing
+end
+
+function axpy_cuda(SIZE,alpha,x,y)
+  maxPossibleThreads = attribute(device(), CUDA.DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X)
+  threads = min(SIZE, maxPossibleThreads)
+  blocks = ceil(Int, SIZE/threads)
+  CUDA.@sync @cuda threads = threads blocks = blocks axpy_cuda_kernel(alpha,x,y)
+end
+
+function dot_cuda_kernel(SIZE, ret, x, y)
+    shared_mem = @cuDynamicSharedMem(Float64, 512)
+    i = ( blockIdx().x - 1) * blockDim().x + threadIdx().x
+    ti = threadIdx().x
+    tmp::Float64 = 0.0
+    shared_mem[threadIdx().x] = 0.0
+
+    if i <= SIZE
+      tmp = @inbounds x[i] * y[i]
+      shared_mem[threadIdx().x] = tmp
+    end
+    sync_threads()
+    if (ti <= 256)
+     shared_mem[ti] += shared_mem[ti+256]
+    end
+    sync_threads()
+    if (ti <= 128)
+      shared_mem[ti] += shared_mem[ti+128]
+    end
+    sync_threads()
+    if (ti <= 64)
+      shared_mem[ti] += shared_mem[ti+64]
+    end
+    sync_threads()
+    if (ti <= 32)
+      shared_mem[ti] += shared_mem[ti+32]
+    end
+    sync_threads()
+    if (ti <= 16)
+      shared_mem[ti] += shared_mem[ti+16]
+    end
+    sync_threads()
+    if (ti <= 8)
+      shared_mem[ti] += shared_mem[ti+8]
+    end
+    sync_threads()
+    if (ti <= 4)
+      shared_mem[ti] += shared_mem[ti+4]
+    end
+    sync_threads()
+    if (ti <= 2)
+      shared_mem[ti] += shared_mem[ti+2]
+    end
+    sync_threads()
+    if (ti == 1)
+      shared_mem[ti] += shared_mem[ti+1]
+      ret[blockIdx().x] = shared_mem[ti]
+    end
+    return nothing
+end
+
+function reduce_kernel(SIZE, red, ret)
+    shared_mem = @cuDynamicSharedMem(Float64, 512)
+    i = ( blockIdx().x - 1) * blockDim().x + threadIdx().x
+    ii = i
+    tmp::Float64 = 0.0
+    if SIZE > 512
+      while ii <= SIZE
+        tmp += @inbounds red[ii]
+        ii += 512
+      end
+    else
+      tmp = @inbounds red[i]
+    end
+    shared_mem[i] = tmp
+    sync_threads()
+    if (i <= 256)
+      shared_mem[i] += shared_mem[i+256]
+    end
+    sync_threads()
+    if (i <= 128)
+      shared_mem[i] += shared_mem[i+128]
+    end
+    sync_threads()
+    if (i <= 64)
+      shared_mem[i] += shared_mem[i+64]
+    end
+    sync_threads()
+    if (i <= 32)
+      shared_mem[i] += shared_mem[i+32]
+    end
+    sync_threads()
+    if (i <= 16)
+      shared_mem[i] += shared_mem[i+16]
+    end
+    sync_threads()
+    if (i <= 8)
+      shared_mem[i] += shared_mem[i+8]
+    end
+    sync_threads()
+    if (i <= 4)
+      shared_mem[i] += shared_mem[i+4]
+    end
+    sync_threads()
+    if (i <= 2)
+      shared_mem[i] += shared_mem[i+2]
+    end
+    sync_threads()
+    if (i == 1)
+      shared_mem[i] += shared_mem[i+1]
+      ret[1] = shared_mem[1]
+    end
+    return nothing
+end
+
+function dot_cuda(SIZE, x, y)
+  maxPossibleThreads = 512
+  threads = min(SIZE, maxPossibleThreads)
+  blocks = ceil(Int, SIZE/threads)
+  ret = CUDA.zeros(Float64,blocks)
+  rret = CUDA.zeros(Float64,1)
+  CUDA.@sync @cuda threads=threads blocks=blocks shmem = 512 * sizeof(Float64) dot_cuda_kernel(SIZE, ret, x, y)
+  CUDA.@sync @cuda threads=threads blocks=1 shmem = 512 * sizeof(Float64) reduce_kernel(blocks, ret, rret)
+  return rret
+end
+
+function matvecmul_cuda_kernel(SIZE, a3, a2, a1, x, y)
+  i = ( blockIdx().x - 1) * blockDim().x + threadIdx().x
+    if i == 1
+      @inbounds y[i] = a2[i] * x[i] + a1[i] * x[i+1]
+    elseif i == length(x)
+      @inbounds y[i] = a3[i] * x[i-1] + a2[i] * x[i]
+    else
+      @inbounds y[i] = a3[i] * x[i-1] + a2[i] * x[i] + a1[i] * x[i+1]
+    end
+  return nothing
+end
+
+function matvecmul_cuda(SIZE, a3, a2, a1, x, y)
+  maxPossibleThreads = attribute(device(),CUDA.DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X) 
+  threads = min(SIZE, maxPossibleThreads)
+  blocks = ceil(Int, SIZE/threads)
+  CUDA.@sync @cuda threads=threads blocks=blocks matvecmul_cuda_kernel(SIZE, a3, a2, a1, x, y)
+end
+
+function cg_cuda(SIZE, a3, a2, a1, r, p, s, x, r_old, r_aux )
+
+  a1 = a1 * 4.0
+  r = r * 0.5
+  p = p * 0.5
+  alpha::Float64 = 0.0
+  negative_alpha::Float64 = 0.0
+  beta::Float64 = 0.0
+
+  for i in 1:1
+
+    r_old = copy(r) 
+
+    matvecmul_cuda(SIZE, a3, a2, a1, p, s)
+
+    alpha0 = dot_amdgpu(SIZE, r, r)
+    alpha1 = dot_amdgpu(SIZE, p, s)
+
+    aalpha0::Float64 = alpha0[1::Integer]
+    aalpha1::Float64 = alpha1[1::Integer]
+
+    alpha = aalpha0 / aalpha1
+    negative_alpha = alpha * (-1.0)
+
+    axpy_cuda(SIZE, negative_alpha, r, s)
+    axpy_cuda(SIZE, alpha, x, p)
+
+    beta0 = dot_cuda(SIZE, r, r)
+    beta1 = dot_cuda(SIZE, r_old, r_old)
+    
+    bbeta0::Float64 = beta0[1::Integer]
+    bbeta1::Float64 = beta1[1::Integer]
+
+    beta = bbeta0 / bbeta1
+
+    r_aux = copy(r)
+
+    axpy_cuda(SIZE, beta, r_aux,p)
+    cond = dot_cuda(SIZE, r, r)
+
+    p = copy(r_aux)
+
+  end
+end
+
+SIZE = 100000000
+a3 = ones(SIZE)
+a2 = ones(SIZE)
+a1 = ones(SIZE)
+r = ones(SIZE)
+p = ones(SIZE)
+s = zeros(SIZE)
+x = zeros(SIZE)
+r_old = zeros(SIZE)
+r_aux = zeros(SIZE)
+da3 = CuArray(a3)
+da2 = CuArray(a2)
+da1 = CuArray(a1)
+dr = CuArray(r)
+dp = CuArray(p)
+ds = CuArray(s)
+dx = CuArray(x)
+dr_old = CuArray(r_old)
+dr_aux = CuArray(r_aux)
+
+@time begin
+  cg_cuda(SIZE, da3, da2, da1, dr, dp, ds, dx, dr_old, dr_aux)
+end
+
+function matvecmul(i, a3, a2, a1, x, y)
+  if i == 1
+    @inbounds y[i] = a2[i] * x[i] + a1[i] * x[i+1]
+  elseif i == length(x)
+    @inbounds y[i] = a3[i] * x[i-1] + a2[i] * x[i]
+  else
+    @inbounds y[i] = a3[i] * x[i-1] + a2[i] * x[i] + a1[i] * x[i+1]
+  end
+end
+
+function axpy(i, alpha, x, y)
+  @inbounds x[i] += alpha * y[i]
+end
+
+function dot(i, x, y)
+  return  @inbounds x[i] * y[i]
+end
+
+function cg(SIZE, a3, a2, a1, r, p, s, x, r_old, r_aux )
+
+  a1 = a1 * 4.0
+  r = r * 0.5
+  p = p * 0.5
+  alpha::Float64 = 0.0
+  negative_alpha::Float64 = 0.0
+  beta::Float64 = 0.0
+
+  for i in 1:1
+
+    r_old = copy(r) 
+
+    JACC.parallel_for(SIZE, matvecmul, a3, a2, a1, p, s)
+
+    alpha0 = JACC.parallel_reduce(SIZE, dot, r, r)
+    alpha1 = JACC.parallel_reduce(SIZE, dot, p, s)
+    
+    aalpha0::Float64 = alpha0[1::Integer]
+    aalpha1::Float64 = alpha1[1::Integer]
+
+    alpha = aalpha0 / aalpha1
+    negative_alpha = alpha * (-1.0)
+
+    JACC.parallel_for(SIZE, axpy, negative_alpha, r, s)
+    JACC.parallel_for(SIZE, axpy, alpha, x, p)
+
+    beta0 = JACC.parallel_reduce(SIZE, dot, r, r)
+    beta1 = JACC.parallel_reduce(SIZE, dot, r_old, r_old)
+    bbeta0::Float64 = beta0[1::Integer]
+    bbeta1::Float64 = beta1[1::Integer]
+    
+    beta = bbeta0 / bbeta1
+
+    r_aux = copy(r)
+
+    JACC.parallel_for(SIZE, axpy, beta, r_aux, p)
+    cond= JACC.parallel_reduce(SIZE, dot, r, r)
+
+    p = copy(r_aux)
+
+  end
+end
+
+a3 = ones(SIZE)
+a2 = ones(SIZE)
+a1 = ones(SIZE)
+r = ones(SIZE)
+p = ones(SIZE)
+s = zeros(SIZE)
+x = zeros(SIZE)
+r_old = zeros(SIZE)
+r_aux = zeros(SIZE)
+ja3 = JACC.Array(a3)
+ja2 = JACC.Array(a2)
+ja1 = JACC.Array(a1)
+jr = JACC.Array(r)
+jp = JACC.Array(p)
+js = JACC.Array(s)
+jx = JACC.Array(x)
+jr_old = JACC.Array(r_old)
+jr_aux = JACC.Array(r_aux)
+
+
+@time begin
+ cg(SIZE, ja3, ja2, ja1, jr, jp, js, jx, jr_old, jr_aux)
+end

@@ -1,0 +1,8 @@
+[deps]
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+JACC = "0979c8fe-16a4-4796-9b82-89a9f10403ea"
+JACCTestCodes = "77baced8-d8f5-42a5-b984-d879fe07720b"
+KernelAbstractions = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
+
+[extras]
+JACC = "0979c8fe-16a4-4796-9b82-89a9f10403ea"

@@ -1,0 +1,210 @@
+[ Info: Using JACC backend: cuda
+[ Info: Using JACC backend: cuda
+┌ Warning: CUDA runtime library libcublasLt.so.11 was loaded from a system path. This may cause errors.
+│ Ensure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+└ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
+┌ Warning: CUDA runtime library libnvrtc.so was loaded from a system path. This may cause errors.
+│ Ensure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+└ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
+┌ Warning: CUDA runtime library libcublasLt.so.11 was loaded from a system path. This may cause errors.
+│ Ensure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+└ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
+┌ Warning: CUDA runtime library libnvrtc.so was loaded from a system path. This may cause errors.
+│ Ensure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+└ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
+[ Info: Using JACC backend: cuda
+┌ Warning: CUDA runtime library libcublasLt.so.11 was loaded from a system path. This may cause errors.
+│ Ensure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+└ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
+┌ Warning: CUDA runtime library libnvrtc.so was loaded from a system path. This may cause errors.
+│ Ensure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+└ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
+[ Info: Using JACC backend: cuda
+axpy 1d 10
+  10.406 μs (2 allocations: 128 bytes)
+axpy 1d 100
+  10.476 μs (2 allocations: 128 bytes)
+axpy 1d 1000
+  10.965 μs (2 allocations: 128 bytes)
+axpy 1d 10000
+  11.803 μs (2 allocations: 128 bytes)
+axpy 1d 100000
+  12.921 μs (2 allocations: 128 bytes)
+axpy 1d 1000000
+  15.295 μs (2 allocations: 128 bytes)
+axpy 1d 10000000
+  185.918 μs (2 allocations: 128 bytes)
+axpy 1d 100000000
+  1.775 ms (3 allocations: 144 bytes)
+axpy 1d jacc 10
+  11.873 μs (23 allocations: 864 bytes)
+axpy 1d jacc 100
+  11.804 μs (23 allocations: 864 bytes)
+axpy 1d jacc 1000
+  11.803 μs (24 allocations: 880 bytes)
+axpy 1d jacc 10000
+  13.340 μs (24 allocations: 880 bytes)
+axpy 1d jacc 100000
+  14.457 μs (24 allocations: 880 bytes)
+axpy 1d jacc 1000000
+  17.251 μs (24 allocations: 880 bytes)
+axpy 1d jacc 10000000
+  187.245 μs (24 allocations: 880 bytes)
+axpy 1d jacc 100000000
+  1.777 ms (25 allocations: 896 bytes)
+dot 1d 10
+  39.460 μs (28 allocations: 1.09 KiB)
+dot 1d 100
+  40.159 μs (28 allocations: 1.09 KiB)
+dot 1d 1000
+  41.486 μs (28 allocations: 1.09 KiB)
+dot 1d 10000
+  40.997 μs (28 allocations: 1.09 KiB)
+dot 1d 100000
+  41.486 μs (28 allocations: 1.09 KiB)
+dot 1d 1000000
+  47.074 μs (28 allocations: 1.09 KiB)
+dot 1d 10000000
+  152.603 μs (28 allocations: 1.09 KiB)
+dot 1d 100000000
+  1.181 ms (29 allocations: 1.11 KiB)
+dot 1d jacc 10
+  39.460 μs (56 allocations: 2.48 KiB)
+dot 1d jacc 100
+  39.600 μs (56 allocations: 2.48 KiB)
+dot 1d jacc 1000
+  39.460 μs (66 allocations: 2.64 KiB)
+dot 1d jacc 10000
+  39.949 μs (66 allocations: 2.64 KiB)
+dot 1d jacc 100000
+  41.346 μs (66 allocations: 2.64 KiB)
+dot 1d jacc 1000000
+  47.562 μs (66 allocations: 2.64 KiB)
+dot 1d jacc 10000000
+  152.604 μs (66 allocations: 2.64 KiB)
+dot 1d jacc 100000000
+  1.182 ms (67 allocations: 2.66 KiB)
+axpy 2d 1000
+  15.505 μs (2 allocations: 128 bytes)
+axpy 2d 2000
+  87.651 μs (2 allocations: 128 bytes)
+axpy 2d 3000
+  179.492 μs (2 allocations: 128 bytes)
+axpy 2d 4000
+  307.302 μs (2 allocations: 128 bytes)
+axpy 2d 5000
+  472.198 μs (2 allocations: 128 bytes)
+axpy 2d 6000
+  677.322 μs (2 allocations: 128 bytes)
+axpy 2d 7000
+  902.212 μs (3 allocations: 144 bytes)
+axpy 2d 8000
+  1.156 ms (3 allocations: 144 bytes)
+axpy 2d 9000
+  1.445 ms (3 allocations: 144 bytes)
+axpy 2d 10000
+  1.755 ms (3 allocations: 144 bytes)
+axpy jacc 2d 1000
+  15.575 μs (24 allocations: 976 bytes)
+axpy jacc 2d 2000
+  22.698 μs (24 allocations: 976 bytes)
+axpy jacc 2d 3000
+  37.225 μs (24 allocations: 976 bytes)
+axpy jacc 2d 4000
+  57.200 μs (24 allocations: 976 bytes)
+axpy jacc 2d 5000
+  83.879 μs (24 allocations: 976 bytes)
+axpy jacc 2d 6000
+  115.448 μs (24 allocations: 976 bytes)
+axpy jacc 2d 7000
+  153.023 μs (24 allocations: 976 bytes)
+axpy jacc 2d 8000
+  196.394 μs (24 allocations: 976 bytes)
+axpy jacc 2d 9000
+  245.772 μs (24 allocations: 976 bytes)
+axpy jacc 2d 10000
+  300.249 μs (24 allocations: 976 bytes)
+dot 2d 1000
+  1.396 ns (0 allocations: 0 bytes)
+dot 2d 2000
+  1.396 ns (0 allocations: 0 bytes)
+dot 2d 3000
+  1.466 ns (0 allocations: 0 bytes)
+dot 2d 4000
+  1.396 ns (0 allocations: 0 bytes)
+dot 2d 5000
+  1.396 ns (0 allocations: 0 bytes)
+dot 2d 6000
+  1.466 ns (0 allocations: 0 bytes)
+dot 2d 7000
+  1.396 ns (0 allocations: 0 bytes)
+dot 2d 8000
+  1.397 ns (0 allocations: 0 bytes)
+dot 2d 9000
+  1.466 ns (0 allocations: 0 bytes)
+dot 2d 10000
+  1.396 ns (0 allocations: 0 bytes)
+dot jacc 2d 1000
+  74.730 μs (68 allocations: 3.02 KiB)
+dot jacc 2d 2000
+  189.898 μs (68 allocations: 3.02 KiB)
+dot jacc 2d 3000
+  385.664 μs (68 allocations: 3.02 KiB)
+dot jacc 2d 4000
+  657.906 μs (68 allocations: 3.02 KiB)
+dot jacc 2d 5000
+  1.021 ms (69 allocations: 3.03 KiB)
+dot jacc 2d 6000
+  1.442 ms (69 allocations: 3.03 KiB)
+dot jacc 2d 7000
+  1.947 ms (69 allocations: 3.03 KiB)
+dot jacc 2d 8000
+  2.536 ms (69 allocations: 3.03 KiB)
+dot jacc 2d 9000
+  3.200 ms (70 allocations: 3.05 KiB)
+dot jacc 2d 10000
+  3.936 ms (71 allocations: 3.28 KiB)
+lbm 100
+  1.466 ns (0 allocations: 0 bytes)
+lbm 200
+  1.396 ns (0 allocations: 0 bytes)
+lbm 300
+  1.397 ns (0 allocations: 0 bytes)
+lbm 400
+  1.397 ns (0 allocations: 0 bytes)
+lbm 500
+  1.816 ns (0 allocations: 0 bytes)
+lbm 600
+  1.396 ns (0 allocations: 0 bytes)
+lbm 700
+  1.397 ns (0 allocations: 0 bytes)
+lbm 800
+  1.397 ns (0 allocations: 0 bytes)
+lbm 900
+  1.397 ns (0 allocations: 0 bytes)
+lbm 1000
+  1.815 ns (0 allocations: 0 bytes)
+lbm jacc 100
+  24.794 μs (35 allocations: 1.59 KiB)
+lbm jacc 200
+  33.594 μs (35 allocations: 1.59 KiB)
+lbm jacc 300
+  63.835 μs (35 allocations: 1.59 KiB)
+lbm jacc 400
+  99.524 μs (35 allocations: 1.59 KiB)
+lbm jacc 500
+  154.070 μs (35 allocations: 1.59 KiB)
+lbm jacc 600
+  208.686 μs (35 allocations: 1.59 KiB)
+lbm jacc 700
+  272.311 μs (35 allocations: 1.59 KiB)
+lbm jacc 800
+  343.480 μs (35 allocations: 1.59 KiB)
+lbm jacc 900
+  440.839 μs (35 allocations: 1.59 KiB)
+lbm jacc 1000
+  525.836 μs (35 allocations: 1.59 KiB)
+cg
+  19.693 ms (218 allocations: 8.44 KiB)
+cg jacc
+  33.451 ms (492 allocations: 19.30 KiB)

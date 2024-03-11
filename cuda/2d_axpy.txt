@@ -1,0 +1,28 @@
+blaschke@nid200345:~/JACC-Test-Codes/cuda> julia 2d_axpy.jl 
+HSN Configured
+  Activating project at `/global/u1/b/blaschke/JACC-Test-Codes/cuda`
+[ Info: Using JACC backend: cuda
+CUDA:
+  0.000042 seconds (10 allocations: 496 bytes)
+  0.000074 seconds (10 allocations: 496 bytes)
+  0.000144 seconds (10 allocations: 496 bytes)
+  0.043251 seconds (49.81 k allocations: 3.421 MiB, 21.72% gc time)
+  0.000545 seconds (35 allocations: 2.531 KiB)
+  0.000562 seconds (34 allocations: 2.406 KiB)
+  0.000753 seconds (35 allocations: 2.594 KiB)
+  0.000967 seconds (13 allocations: 576 bytes)
+  0.001210 seconds (13 allocations: 576 bytes)
+  0.001479 seconds (13 allocations: 576 bytes)
+JACC
+  0.000109 seconds (29 allocations: 1.219 KiB)
+  0.000271 seconds (32 allocations: 1.297 KiB)
+  0.000477 seconds (32 allocations: 1.297 KiB)
+  0.000797 seconds (32 allocations: 1.297 KiB)
+  0.001207 seconds (32 allocations: 1.297 KiB)
+  0.001685 seconds (32 allocations: 1.297 KiB)
+  0.002272 seconds (32 allocations: 1.297 KiB)
+  0.002911 seconds (32 allocations: 1.297 KiB)
+  0.003663 seconds (32 allocations: 1.297 KiB)
+  0.004492 seconds (32 allocations: 1.297 KiB)
+blaschke@nid200345:~/JACC-Test-Codes/cuda> 
+

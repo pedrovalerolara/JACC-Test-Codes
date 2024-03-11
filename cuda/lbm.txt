@@ -1,0 +1,27 @@
+blaschke@nid200345:~/JACC-Test-Codes/cuda> julia lbm.jl 
+HSN Configured
+  Activating project at `/global/u1/b/blaschke/JACC-Test-Codes/cuda`
+[ Info: Using JACC backend: cuda
+CUDA:
+  0.000056 seconds (10 allocations: 528 bytes)
+  0.000060 seconds (10 allocations: 528 bytes)
+  0.000067 seconds (10 allocations: 528 bytes)
+  0.000079 seconds (10 allocations: 528 bytes)
+  0.000136 seconds (10 allocations: 528 bytes)
+  0.000177 seconds (10 allocations: 528 bytes)
+  0.044026 seconds (49.81 k allocations: 3.421 MiB, 21.51% gc time)
+  0.000587 seconds (35 allocations: 2.562 KiB)
+  0.000470 seconds (34 allocations: 2.438 KiB)
+  0.000564 seconds (35 allocations: 2.625 KiB)
+JACC
+  0.000077 seconds (39 allocations: 1.844 KiB)
+  0.000056 seconds (39 allocations: 1.844 KiB)
+  0.000077 seconds (39 allocations: 1.844 KiB)
+  0.000112 seconds (39 allocations: 1.844 KiB)
+  0.000172 seconds (39 allocations: 1.844 KiB)
+  0.000270 seconds (42 allocations: 1.922 KiB)
+  0.000318 seconds (42 allocations: 1.922 KiB)
+  0.000392 seconds (42 allocations: 1.922 KiB)
+  0.000495 seconds (42 allocations: 1.922 KiB)
+  0.000583 seconds (42 allocations: 1.922 KiB)
+

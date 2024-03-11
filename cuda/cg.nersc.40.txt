@@ -1,0 +1,10 @@
+blaschke@nid001000:~/JACC-Test-Codes/cuda> julia cg.jl 
+HSN Configured
+  Activating project at `/global/u1/b/blaschke/JACC-Test-Codes/cuda`
+[ Info: Using JACC backend: cuda
+CUDA:
+  0.028529 seconds (434 allocations: 19.594 KiB)
+JACC
+  0.042596 seconds (713 allocations: 30.609 KiB)
+blaschke@nid001000:~/JACC-Test-Codes/cuda> 
+

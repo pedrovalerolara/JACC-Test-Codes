@@ -1,0 +1,3 @@
+[ Info: Using JACC backend: oneapi
+cg
+  403.936 ms (1601 allocations: 72.44 KiB)

@@ -81,7 +81,7 @@ function dot_kernel(SIZE::Int, ret, x, y)
     barrier()
     if (ti == 1)
         shared_mem[ti] += shared_mem[ti+1]
-        ret[blockIdx().x] = shared_mem[ti]
+        ret[get_group_id(0)] = shared_mem[ti]
     end
     return nothing
 end
@@ -153,7 +153,7 @@ end
 
 #-------------------------2D DOT
 
-function dot_kernel((M, N)::Tuple{Int, Int}, ret, x::oneArray, y::oneArray)
+function dot_kernel((M, N)::Tuple{Int, Int}, ret, x, y)
     shared_mem = oneLocalArray(Float64, 16 * 16)
     i = get_global_id(0)
     j = get_global_id(1)
@@ -169,25 +169,25 @@ function dot_kernel((M, N)::Tuple{Int, Int}, ret, x::oneArray, y::oneArray)
         tmp = @inbounds x[i,j] * y[i,j]
         shared_mem[(ti-1)*16+tj] = tmp
     end
-    sync_threads()
+    barrier()
     if (ti <= 8 && tj <= 8 && ti+8 <= M && tj+8 <= N)
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+7)*16)+(tj+8)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+8)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+7)*16)+tj]
     end
-    sync_threads()
+    barrier()
     if (ti <= 4 && tj <= 4 && ti+4 <= M && tj+4 <= N)
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+3)*16)+(tj+4)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+4)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+3)*16)+tj]
     end
-    sync_threads()
+    barrier()
     if (ti <= 2 && tj <= 2 && ti+2 <= M && tj+2 <= N)
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+1)*16)+(tj+2)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+2)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti+1)*16)+tj]
     end
-    sync_threads()
+    barrier()
     if (ti == 1 && tj == 1 && ti+1 <= M && tj+1 <= N)
         shared_mem[((ti-1)*16)+tj] += shared_mem[ti*16+(tj+1)]
         shared_mem[((ti-1)*16)+tj] += shared_mem[((ti-1)*16)+(tj+1)]

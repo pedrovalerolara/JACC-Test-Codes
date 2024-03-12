@@ -1,0 +1,21 @@
+[ Info: Using JACC backend: oneapi
+axpy 2d 1000
+  77.653 μs (45 allocations: 2.06 KiB)
+axpy 2d 2000
+  246.647 μs (45 allocations: 2.06 KiB)
+axpy 2d 3000
+  537.800 μs (45 allocations: 2.06 KiB)
+axpy 2d 4000
+  970.088 μs (45 allocations: 2.06 KiB)
+axpy 2d 5000
+  1.551 ms (45 allocations: 2.06 KiB)
+axpy 2d 6000
+  1.613 ms (45 allocations: 2.06 KiB)
+axpy 2d 7000
+  1.652 ms (45 allocations: 2.06 KiB)
+axpy 2d 8000
+  1.792 ms (45 allocations: 2.06 KiB)
+axpy 2d 9000
+  1.740 ms (45 allocations: 2.06 KiB)
+axpy 2d 10000
+  1.109 ms (45 allocations: 2.06 KiB)

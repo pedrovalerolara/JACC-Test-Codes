@@ -1,0 +1,21 @@
+[ Info: Using JACC backend: oneapi
+lbm jacc 100
+  66.689 μs (85 allocations: 5.16 KiB)
+lbm jacc 200
+  116.387 μs (85 allocations: 5.16 KiB)
+lbm jacc 300
+  214.486 μs (85 allocations: 5.16 KiB)
+lbm jacc 400
+  339.885 μs (85 allocations: 5.16 KiB)
+lbm jacc 500
+  539.160 μs (85 allocations: 5.16 KiB)
+lbm jacc 600
+  711.986 μs (85 allocations: 5.16 KiB)
+lbm jacc 700
+  918.996 μs (85 allocations: 5.16 KiB)
+lbm jacc 800
+  1.149 ms (85 allocations: 5.16 KiB)
+lbm jacc 900
+  1.466 ms (85 allocations: 5.16 KiB)
+lbm jacc 1000
+  1.783 ms (85 allocations: 5.16 KiB)

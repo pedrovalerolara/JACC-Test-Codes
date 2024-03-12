@@ -1,0 +1,22 @@
+ oneAPI.versioninfo()
+Binary dependencies:
+- NEO: 24.5.28454+0
+- libigc: 1.0.15985+0
+- gmmlib: 22.3.11+0
+- SPIRV_LLVM_Translator_unified: 0.3.0+0
+- SPIRV_Tools: 2023.2.0+0
+
+Toolchain:
+- Julia: 1.10.2
+- LLVM: 15.0.7
+
+1 driver:
+- 00000000-0000-0000-17bc-114801036681 (v1.3.26241, API v1.3.0)
+
+6 devices:
+- Intel(R) Data Center GPU Max 1550
+- Intel(R) Data Center GPU Max 1550
+- Intel(R) Data Center GPU Max 1550
+- Intel(R) Data Center GPU Max 1550
+- Intel(R) Data Center GPU Max 1550
+- Intel(R) Data Center GPU Max 1550

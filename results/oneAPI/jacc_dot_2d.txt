@@ -1,0 +1,21 @@
+[ Info: Using JACC backend: oneapi
+dot jacc 2d 1000
+  298.877 μs (197 allocations: 9.44 KiB)
+dot jacc 2d 2000
+  453.772 μs (197 allocations: 9.44 KiB)
+dot jacc 2d 3000
+  726.556 μs (197 allocations: 9.44 KiB)
+dot jacc 2d 4000
+  1.129 ms (197 allocations: 9.44 KiB)
+dot jacc 2d 5000
+  1.580 ms (197 allocations: 9.44 KiB)
+dot jacc 2d 6000
+  1.911 ms (197 allocations: 9.44 KiB)
+dot jacc 2d 7000
+  2.363 ms (197 allocations: 9.44 KiB)
+dot jacc 2d 8000
+  2.802 ms (197 allocations: 9.44 KiB)
+dot jacc 2d 9000
+  3.316 ms (197 allocations: 9.44 KiB)
+dot jacc 2d 10000
+  3.848 ms (197 allocations: 9.44 KiB)

@@ -21,190 +21,190 @@
 └ @ CUDA /lus/eagle/projects/AIPower/julia_depot/packages/CUDA/htRwP/src/initialization.jl:187
 [ Info: Using JACC backend: cuda
 axpy 1d 10
-  10.406 μs (2 allocations: 128 bytes)
+  10.309 μs (2 allocations: 128 bytes)
 axpy 1d 100
-  10.476 μs (2 allocations: 128 bytes)
+  10.330 μs (2 allocations: 128 bytes)
 axpy 1d 1000
-  10.965 μs (2 allocations: 128 bytes)
+  10.720 μs (2 allocations: 128 bytes)
 axpy 1d 10000
-  11.803 μs (2 allocations: 128 bytes)
+  10.760 μs (2 allocations: 128 bytes)
 axpy 1d 100000
-  12.921 μs (2 allocations: 128 bytes)
+  11.361 μs (2 allocations: 128 bytes)
 axpy 1d 1000000
-  15.295 μs (2 allocations: 128 bytes)
+  14.377 μs (2 allocations: 128 bytes)
 axpy 1d 10000000
-  185.918 μs (2 allocations: 128 bytes)
+  188.734 μs (3 allocations: 144 bytes)
 axpy 1d 100000000
-  1.775 ms (3 allocations: 144 bytes)
+  1.770 ms (3 allocations: 144 bytes)
 axpy 1d jacc 10
-  11.873 μs (23 allocations: 864 bytes)
+  11.912 μs (23 allocations: 864 bytes)
 axpy 1d jacc 100
-  11.804 μs (23 allocations: 864 bytes)
+  11.882 μs (23 allocations: 864 bytes)
 axpy 1d jacc 1000
-  11.803 μs (24 allocations: 880 bytes)
+  12.383 μs (24 allocations: 880 bytes)
 axpy 1d jacc 10000
-  13.340 μs (24 allocations: 880 bytes)
+  12.383 μs (24 allocations: 880 bytes)
 axpy 1d jacc 100000
-  14.457 μs (24 allocations: 880 bytes)
+  13.054 μs (24 allocations: 880 bytes)
 axpy 1d jacc 1000000
-  17.251 μs (24 allocations: 880 bytes)
+  16.040 μs (24 allocations: 880 bytes)
 axpy 1d jacc 10000000
-  187.245 μs (24 allocations: 880 bytes)
+  190.327 μs (25 allocations: 896 bytes)
 axpy 1d jacc 100000000
-  1.777 ms (25 allocations: 896 bytes)
+  1.770 ms (25 allocations: 896 bytes)
 dot 1d 10
-  39.460 μs (28 allocations: 1.09 KiB)
+  30.457 μs (28 allocations: 1.09 KiB)
 dot 1d 100
-  40.159 μs (28 allocations: 1.09 KiB)
+  30.557 μs (28 allocations: 1.09 KiB)
 dot 1d 1000
-  41.486 μs (28 allocations: 1.09 KiB)
+  28.844 μs (28 allocations: 1.09 KiB)
 dot 1d 10000
-  40.997 μs (28 allocations: 1.09 KiB)
+  29.134 μs (28 allocations: 1.09 KiB)
 dot 1d 100000
-  41.486 μs (28 allocations: 1.09 KiB)
+  29.956 μs (28 allocations: 1.09 KiB)
 dot 1d 1000000
-  47.074 μs (28 allocations: 1.09 KiB)
+  38.052 μs (28 allocations: 1.09 KiB)
 dot 1d 10000000
-  152.603 μs (28 allocations: 1.09 KiB)
+  144.912 μs (28 allocations: 1.09 KiB)
 dot 1d 100000000
-  1.181 ms (29 allocations: 1.11 KiB)
+  1.173 ms (29 allocations: 1.11 KiB)
 dot 1d jacc 10
-  39.460 μs (56 allocations: 2.48 KiB)
+  34.735 μs (56 allocations: 2.48 KiB)
 dot 1d jacc 100
-  39.600 μs (56 allocations: 2.48 KiB)
+  34.916 μs (56 allocations: 2.48 KiB)
 dot 1d jacc 1000
-  39.460 μs (66 allocations: 2.64 KiB)
+  35.657 μs (66 allocations: 2.64 KiB)
 dot 1d jacc 10000
-  39.949 μs (66 allocations: 2.64 KiB)
+  35.025 μs (66 allocations: 2.64 KiB)
 dot 1d jacc 100000
-  41.346 μs (66 allocations: 2.64 KiB)
+  36.258 μs (66 allocations: 2.64 KiB)
 dot 1d jacc 1000000
-  47.562 μs (66 allocations: 2.64 KiB)
+  42.800 μs (66 allocations: 2.64 KiB)
 dot 1d jacc 10000000
-  152.604 μs (66 allocations: 2.64 KiB)
+  147.857 μs (66 allocations: 2.64 KiB)
 dot 1d jacc 100000000
-  1.182 ms (67 allocations: 2.66 KiB)
+  1.175 ms (67 allocations: 2.66 KiB)
 axpy 2d 1000
-  15.505 μs (2 allocations: 128 bytes)
+  14.568 μs (2 allocations: 128 bytes)
 axpy 2d 2000
-  87.651 μs (2 allocations: 128 bytes)
+  84.639 μs (2 allocations: 128 bytes)
 axpy 2d 3000
-  179.492 μs (2 allocations: 128 bytes)
+  179.837 μs (3 allocations: 144 bytes)
 axpy 2d 4000
-  307.302 μs (2 allocations: 128 bytes)
+  308.558 μs (3 allocations: 144 bytes)
 axpy 2d 5000
-  472.198 μs (2 allocations: 128 bytes)
+  474.079 μs (3 allocations: 144 bytes)
 axpy 2d 6000
-  677.322 μs (2 allocations: 128 bytes)
+  667.490 μs (3 allocations: 144 bytes)
 axpy 2d 7000
-  902.212 μs (3 allocations: 144 bytes)
+  895.777 μs (3 allocations: 144 bytes)
 axpy 2d 8000
-  1.156 ms (3 allocations: 144 bytes)
+  1.148 ms (3 allocations: 144 bytes)
 axpy 2d 9000
-  1.445 ms (3 allocations: 144 bytes)
+  1.438 ms (3 allocations: 144 bytes)
 axpy 2d 10000
-  1.755 ms (3 allocations: 144 bytes)
+  1.750 ms (3 allocations: 144 bytes)
 axpy jacc 2d 1000
-  15.575 μs (24 allocations: 976 bytes)
+  69.079 μs (24 allocations: 976 bytes)
 axpy jacc 2d 2000
-  22.698 μs (24 allocations: 976 bytes)
+  235.191 μs (25 allocations: 992 bytes)
 axpy jacc 2d 3000
-  37.225 μs (24 allocations: 976 bytes)
+  490.208 μs (25 allocations: 992 bytes)
 axpy jacc 2d 4000
-  57.200 μs (24 allocations: 976 bytes)
+  823.553 μs (25 allocations: 992 bytes)
 axpy jacc 2d 5000
-  83.879 μs (24 allocations: 976 bytes)
+  1.235 ms (25 allocations: 992 bytes)
 axpy jacc 2d 6000
-  115.448 μs (24 allocations: 976 bytes)
+  1.720 ms (25 allocations: 992 bytes)
 axpy jacc 2d 7000
-  153.023 μs (24 allocations: 976 bytes)
+  2.284 ms (25 allocations: 992 bytes)
 axpy jacc 2d 8000
-  196.394 μs (24 allocations: 976 bytes)
+  2.921 ms (25 allocations: 992 bytes)
 axpy jacc 2d 9000
-  245.772 μs (24 allocations: 976 bytes)
+  3.660 ms (25 allocations: 992 bytes)
 axpy jacc 2d 10000
-  300.249 μs (24 allocations: 976 bytes)
+  4.476 ms (25 allocations: 992 bytes)
 dot 2d 1000
-  1.396 ns (0 allocations: 0 bytes)
+  65.463 μs (28 allocations: 1.09 KiB)
 dot 2d 2000
-  1.396 ns (0 allocations: 0 bytes)
+  182.612 μs (28 allocations: 1.09 KiB)
 dot 2d 3000
-  1.466 ns (0 allocations: 0 bytes)
+  385.242 μs (29 allocations: 1.11 KiB)
 dot 2d 4000
-  1.396 ns (0 allocations: 0 bytes)
+  661.080 μs (29 allocations: 1.11 KiB)
 dot 2d 5000
-  1.396 ns (0 allocations: 0 bytes)
+  1.010 ms (30 allocations: 1.12 KiB)
 dot 2d 6000
-  1.466 ns (0 allocations: 0 bytes)
+  1.431 ms (30 allocations: 1.12 KiB)
 dot 2d 7000
-  1.396 ns (0 allocations: 0 bytes)
+  1.937 ms (30 allocations: 1.12 KiB)
 dot 2d 8000
-  1.397 ns (0 allocations: 0 bytes)
+  2.519 ms (30 allocations: 1.12 KiB)
 dot 2d 9000
-  1.466 ns (0 allocations: 0 bytes)
+  3.184 ms (30 allocations: 1.12 KiB)
 dot 2d 10000
-  1.396 ns (0 allocations: 0 bytes)
+  3.916 ms (30 allocations: 1.12 KiB)
 dot jacc 2d 1000
-  74.730 μs (68 allocations: 3.02 KiB)
+  70.151 μs (68 allocations: 3.02 KiB)
 dot jacc 2d 2000
-  189.898 μs (68 allocations: 3.02 KiB)
+  186.650 μs (68 allocations: 3.02 KiB)
 dot jacc 2d 3000
-  385.664 μs (68 allocations: 3.02 KiB)
+  389.379 μs (69 allocations: 3.03 KiB)
 dot jacc 2d 4000
-  657.906 μs (68 allocations: 3.02 KiB)
+  663.473 μs (70 allocations: 3.05 KiB)
 dot jacc 2d 5000
-  1.021 ms (69 allocations: 3.03 KiB)
+  1.015 ms (70 allocations: 3.05 KiB)
 dot jacc 2d 6000
-  1.442 ms (69 allocations: 3.03 KiB)
+  1.436 ms (70 allocations: 3.05 KiB)
 dot jacc 2d 7000
-  1.947 ms (69 allocations: 3.03 KiB)
+  1.941 ms (70 allocations: 3.05 KiB)
 dot jacc 2d 8000
-  2.536 ms (69 allocations: 3.03 KiB)
+  2.523 ms (70 allocations: 3.05 KiB)
 dot jacc 2d 9000
-  3.200 ms (70 allocations: 3.05 KiB)
+  3.187 ms (70 allocations: 3.05 KiB)
 dot jacc 2d 10000
-  3.936 ms (71 allocations: 3.28 KiB)
+  3.919 ms (70 allocations: 3.05 KiB)
 lbm 100
-  1.466 ns (0 allocations: 0 bytes)
+  22.312 μs (2 allocations: 160 bytes)
 lbm 200
-  1.396 ns (0 allocations: 0 bytes)
+  27.422 μs (2 allocations: 160 bytes)
 lbm 300
-  1.397 ns (0 allocations: 0 bytes)
+  49.993 μs (2 allocations: 160 bytes)
 lbm 400
-  1.397 ns (0 allocations: 0 bytes)
+  72.065 μs (2 allocations: 160 bytes)
 lbm 500
-  1.816 ns (0 allocations: 0 bytes)
+  123.111 μs (2 allocations: 160 bytes)
 lbm 600
-  1.396 ns (0 allocations: 0 bytes)
+  166.001 μs (3 allocations: 176 bytes)
 lbm 700
-  1.397 ns (0 allocations: 0 bytes)
+  211.346 μs (3 allocations: 176 bytes)
 lbm 800
-  1.397 ns (0 allocations: 0 bytes)
+  269.174 μs (3 allocations: 176 bytes)
 lbm 900
-  1.397 ns (0 allocations: 0 bytes)
+  341.630 μs (3 allocations: 176 bytes)
 lbm 1000
-  1.815 ns (0 allocations: 0 bytes)
+  405.851 μs (3 allocations: 176 bytes)
 lbm jacc 100
-  24.794 μs (35 allocations: 1.59 KiB)
+  23.945 μs (35 allocations: 1.59 KiB)
 lbm jacc 200
-  33.594 μs (35 allocations: 1.59 KiB)
+  33.583 μs (35 allocations: 1.59 KiB)
 lbm jacc 300
-  63.835 μs (35 allocations: 1.59 KiB)
+  62.808 μs (35 allocations: 1.59 KiB)
 lbm jacc 400
-  99.524 μs (35 allocations: 1.59 KiB)
+  98.454 μs (35 allocations: 1.59 KiB)
 lbm jacc 500
-  154.070 μs (35 allocations: 1.59 KiB)
+  155.161 μs (35 allocations: 1.59 KiB)
 lbm jacc 600
-  208.686 μs (35 allocations: 1.59 KiB)
+  210.094 μs (36 allocations: 1.61 KiB)
 lbm jacc 700
-  272.311 μs (35 allocations: 1.59 KiB)
+  274.554 μs (36 allocations: 1.61 KiB)
 lbm jacc 800
-  343.480 μs (35 allocations: 1.59 KiB)
+  346.799 μs (36 allocations: 1.61 KiB)
 lbm jacc 900
-  440.839 μs (35 allocations: 1.59 KiB)
+  442.980 μs (36 allocations: 1.61 KiB)
 lbm jacc 1000
-  525.836 μs (35 allocations: 1.59 KiB)
+  529.412 μs (36 allocations: 1.61 KiB)
 cg
-  19.693 ms (218 allocations: 8.44 KiB)
+  19.664 ms (218 allocations: 8.44 KiB)
 cg jacc
-  33.451 ms (492 allocations: 19.30 KiB)
+  33.360 ms (492 allocations: 19.30 KiB)

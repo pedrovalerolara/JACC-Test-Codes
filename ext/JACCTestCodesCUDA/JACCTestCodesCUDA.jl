@@ -153,7 +153,7 @@ end
 
 #-------------------------2D DOT
 
-function dot_kernel((M, N)::Tuple{Int, Int}, ret, x::CuArray, y::CuArray)
+function dot_kernel((M, N)::Tuple{Int, Int}, ret, x, y)
     shared_mem = @cuDynamicSharedMem(Float64, 16*16)
 
     i = (blockIdx().x - 1) * blockDim().x + threadIdx().x

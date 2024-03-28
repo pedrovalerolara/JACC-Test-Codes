@@ -22,6 +22,8 @@ We iused the local CUDA runtime installation. More info on earch below:
 
 ### 40GB nodes:
 
+All benchmark data files ending in `$BENCHMARK_NAME.nersc.40.txt` correspond to data collected from these nodes.
+
 ```
 julia> CUDA.versioninfo()
 CUDA runtime 12.2, local installation
@@ -59,6 +61,8 @@ Preferences:
 ```
 
 ### 80GB nodes:
+
+All benchmark data files ending in `$BENCHMARK_NAME.nersc.80.txt` correspond to data collected from these nodes.
 
 ```
 julia> CUDA.versioninfo()

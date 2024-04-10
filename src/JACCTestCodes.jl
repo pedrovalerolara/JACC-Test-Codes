@@ -10,24 +10,24 @@ const KA = KernelAbstractions
 export run_benchmarks
 
 function run_benchmarks(backend::KA.Backend; only=nothing, only_api=nothing)
-    SIZE = 100000000
+    SIZE = 1000
     alpha = 2.0
     if only == nothing || only == :axpy_1d
         benchmark_1d_axpy(backend, alpha, SIZE; only=only_api)
     end
-    SIZE = 100000000
+    SIZE = 1000
     if only == nothing || only == :dot_1d
         benchmark_1d_dot(backend, SIZE; only=only_api)
     end
-    SIZE = 10000
+    SIZE = 300
     if only == nothing || only == :axpy_2d
         benchmark_2d_axpy(backend, alpha, SIZE; only=only_api)
     end
-    SIZE = 10000
+    SIZE = 300
     if only == nothing || only == :dot_2d
         benchmark_2d_dot(backend, SIZE; only=only_api)
     end
-    SIZE = 1000
+    SIZE = 100
     if only == nothing || only == :lbm
         benchmark_lbm(backend, SIZE; only=only_api)
     end
@@ -96,7 +96,7 @@ function benchmark_1d_axpy(backend::KA.Backend, alpha, SIZE; only=nothing)
     if only != :jacc
         dx = adapt(backend, x)
         dy = adapt(backend, y)
-        for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+        for i in [10,100]#,1000,10000]#,100000,1000000,10000000,100000000]
             println("axpy 1d $i")
             @btime begin
                 axpy($i,$alpha,$dx,$dy)
@@ -106,7 +106,7 @@ function benchmark_1d_axpy(backend::KA.Backend, alpha, SIZE; only=nothing)
     if only != :vendor
         jx = JACC.Array(x)
         jy = JACC.Array(y)
-        for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+        for i in [10,100]#,1000]#,10000]#,100000,1000000]#,10000000,100000000]
             println("axpy 1d jacc $i")
             @btime begin
                 JACC.parallel_for($i, $axpy_jacc, $alpha, $jx, $jy)
@@ -121,7 +121,7 @@ function benchmark_1d_dot(backend::KA.Backend, SIZE; only=nothing)
     if only != :jacc
         dx = adapt(backend, x)
         dy = adapt(backend, y)
-        for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+        for i in [10,100]#,1000,10000]#,100000,1000000]#,10000000,100000000]
             println("dot 1d $i")
             @btime begin
                 res = dot($i,$dx,$dy)
@@ -131,7 +131,7 @@ function benchmark_1d_dot(backend::KA.Backend, SIZE; only=nothing)
     if only != :vendor
         jx = JACC.Array(x)
         jy = JACC.Array(y)
-        for i in [10,100,1000,10000,100000,1000000,10000000,100000000]
+        for i in [10,100]#,1000,10000]#,100000,1000000]#,10000000,100000000]
             println("dot 1d jacc $i")
             @btime begin
                 JACC.parallel_reduce($i, $dot_jacc, $jx, $jy)
@@ -146,7 +146,7 @@ function benchmark_2d_axpy(backend::KA.Backend, alpha, SIZE; only=nothing)
     if only != :jacc
         dx = adapt(backend, x)
         dy = adapt(backend, y)
-        for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+        for i in [100,200,300]#,4000,5000,6000,7000]#,8000,9000,10000]
             println("axpy 2d $i")
             @btime begin
                 axpy(($i,$i),$alpha,$dx,$dy)
@@ -156,7 +156,7 @@ function benchmark_2d_axpy(backend::KA.Backend, alpha, SIZE; only=nothing)
     if only != :vendor
         jx = JACC.Array(x)
         jy = JACC.Array(y)
-        for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+        for i in [100,200,300]#,4000,5000,6000,7000]#,8000,9000,10000]
             println("axpy jacc 2d $i")
             @btime begin
                 JACC.parallel_for(($i,$i), $axpy_jacc, $alpha, $jx, $jy)
@@ -171,7 +171,7 @@ function benchmark_2d_dot(backend::KA.Backend, SIZE; only=nothing)
     if only != :jacc
         dx = adapt(backend, x)
         dy = adapt(backend, y)
-        for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+        for i in [100,200,300]#,4000,5000,6000,7000]#,8000,9000,10000]
             println("dot 2d $i")
             @btime begin
                 res = dot(($i,$i),$dx,$dy)
@@ -181,7 +181,7 @@ function benchmark_2d_dot(backend::KA.Backend, SIZE; only=nothing)
     if only != :vendor
         jx = JACC.Array(x)
         jy = JACC.Array(y)
-        for i in [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+        for i in [100,200,300]#,4000,5000,6000,7000]#,8000,9000,10000]
             println("dot jacc 2d $i")
             @btime begin
                 res = JACC.parallel_reduce(($i,$i), $dot_jacc, $jx, $jy)
@@ -191,7 +191,7 @@ function benchmark_2d_dot(backend::KA.Backend, SIZE; only=nothing)
 end
 
 function benchmark_lbm(backend::KA.Backend, SIZE; only=nothing)
-    SIZE = 1000
+    SIZE = 100
     f = ones(SIZE * SIZE * 9) .* 2.0
     f1 = ones(SIZE * SIZE * 9) .* 3.0
     f2 = ones(SIZE * SIZE * 9) .* 4.0
@@ -225,7 +225,7 @@ function benchmark_lbm(backend::KA.Backend, SIZE; only=nothing)
         dcx = adapt(backend, cx)
         dcy = adapt(backend, cy)
         dw  = adapt(backend, w)
-        for i in [100,200,300,400,500,600,700,800,900,1000]
+        for i in [100,200,300]#,400,500,600,700]#,800,900,1000]
             println("lbm $i")
             @btime begin
                 lbm(($i,$i),$df,$df1,$df2,$t,$dw,$dcx,$dcy,$SIZE)
@@ -239,7 +239,7 @@ function benchmark_lbm(backend::KA.Backend, SIZE; only=nothing)
         jcx = JACC.Array(cx)
         jcy = JACC.Array(cy)
         jw  = JACC.Array(w)
-        for i in [100,200,300,400,500,600,700,800,900,1000]
+        for i in [100,200,300]#,400,500,600,700]#,800,900,1000]
             println("lbm jacc $i")
             @btime begin
                 JACC.parallel_for(($i,$i),$lbm_jacc,$jf,$jf1,$jf2,$t,$jw,$jcx,$jcy,$SIZE)
@@ -249,7 +249,7 @@ function benchmark_lbm(backend::KA.Backend, SIZE; only=nothing)
 end
 
 function benchmark_cg(backend::KA.Backend, SIZE; only=nothing)
-    SIZE = 100000000
+    SIZE = 1000
     a3 = ones(SIZE)
     a2 = ones(SIZE)
     a1 = ones(SIZE)

@@ -1,0 +1,11 @@
+[ Info: Using JACC backend: amdgpu
+[ Info: Using JACC backend: amdgpu
+ERROR: LoadError: UndefVarError: `alpha` not defined
+Stacktrace:
+ [1] run_benchmarks(backend::ROCBackend; only::Nothing, only_api::Nothing)
+   @ JACCTestCodes ~/testing-JACC-Test-Codes/JACC-Test-Codes/src/JACCTestCodes.jl:24
+ [2] run_benchmarks(backend::ROCBackend)
+   @ JACCTestCodes ~/testing-JACC-Test-Codes/JACC-Test-Codes/src/JACCTestCodes.jl:12
+ [3] top-level scope
+   @ ~/testing-JACC-Test-Codes/JACC-Test-Codes/benchmarks/AMDGPU/benchmark.jl:9
+in expression starting at /home/5pv/testing-JACC-Test-Codes/JACC-Test-Codes/benchmarks/AMDGPU/benchmark.jl:9
